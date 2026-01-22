@@ -48,7 +48,6 @@ export class MusicManager {
         // 共用的 yt-dlp 選項
         const ytdlOptions: any = {
             noWarnings: true,
-            preferFreeFormats: true,
             noCheckCertificates: true,
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             referer: 'https://www.youtube.com/',
@@ -114,15 +113,13 @@ export class MusicManager {
         
         const execOptions: any = {
             output: '-',
-            format: 'bestaudio',
+            format: 'bestaudio/best', // 放寬格式限制：優先選最佳音訊，否則選最佳格式
             limitRate: '1M',
             noPlaylist: true,
             noCheckCertificates: true,
             noWarnings: true,
-            preferFreeFormats: true,
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             referer: 'https://www.youtube.com/',
-            extractorArgs: 'youtube:player_client=ios'
         };
 
         if (hasCookies) {
