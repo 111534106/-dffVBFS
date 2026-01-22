@@ -51,6 +51,7 @@ export class MusicManager {
             noCheckCertificates: true,
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             referer: 'https://www.youtube.com/',
+            extractorArgs: 'youtube:player_client=android' // 關鍵修正：改用 Android 客戶端
         };
 
         if (hasCookies) {
@@ -113,13 +114,14 @@ export class MusicManager {
         
         const execOptions: any = {
             output: '-',
-            format: 'bestaudio/best', // 放寬格式限制：優先選最佳音訊，否則選最佳格式
+            format: 'bestaudio/best',
             limitRate: '1M',
             noPlaylist: true,
             noCheckCertificates: true,
             noWarnings: true,
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             referer: 'https://www.youtube.com/',
+            extractorArgs: 'youtube:player_client=android' // 關鍵修正：改用 Android 客戶端
         };
 
         if (hasCookies) {
