@@ -56,7 +56,7 @@ export class MusicManager {
                      ...ytdlOptions,
                      dumpSingleJson: true,
                      skipDownload: true
-                 });
+                 } as any);
                  // @ts-ignore
                  title = output.title;
                  // @ts-ignore
@@ -110,7 +110,7 @@ export class MusicManager {
                 userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
                 referer: 'https://www.youtube.com/',
                 extractorArgs: 'youtube:player_client=ios'
-            }, { stdio: ['ignore', 'pipe', 'ignore'] });
+            } as any, { stdio: ['ignore', 'pipe', 'ignore'] });
 
             if (!process.stdout) throw new Error('無法啟動 yt-dlp 串流');
 
