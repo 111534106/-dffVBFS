@@ -10,10 +10,10 @@ RUN apt-get update && \
 # 設定工作目錄
 WORKDIR /app
 
-# 複製 package.json 和 lock 檔
-COPY package*.json ./
+# 只複製 package.json (忽略 package-lock.json 以避免 Windows/Linux 衝突)
+COPY package.json ./
 
-# 安裝專案依賴
+# 安裝專案依賴 (重新計算依賴樹)
 RUN npm install
 
 # 複製所有程式碼
