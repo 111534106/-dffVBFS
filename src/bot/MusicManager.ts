@@ -39,13 +39,22 @@ export class MusicManager {
         let title: string;
         let duration: string;
 
+        // 共用的 yt-dlp 選項，用於模擬瀏覽器以繞過反爬蟲
+        const ytdlOptions = {
+            noWarnings: true,
+            preferFreeFormats: true,
+            noCheckCertificates: true,
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            referer: 'https://www.youtube.com/',
+            extractorArgs: 'youtube:player_client=ios' // 模擬 iOS 客戶端有時能繞過限制
+        };
+
         if (query.startsWith('http')) {
             songUrl = query;
             try {
                  const output = await youtubedl(songUrl, {
+                     ...ytdlOptions,
                      dumpSingleJson: true,
-                     noWarnings: true,
-                     preferFreeFormats: true,
                      skipDownload: true
                  });
                  // @ts-ignore
@@ -98,6 +107,9 @@ export class MusicManager {
                 noCheckCertificates: true,
                 noWarnings: true,
                 preferFreeFormats: true,
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                referer: 'https://www.youtube.com/',
+                extractorArgs: 'youtube:player_client=ios'
             }, { stdio: ['ignore', 'pipe', 'ignore'] });
 
             if (!process.stdout) throw new Error('無法啟動 yt-dlp 串流');
