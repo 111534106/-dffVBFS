@@ -1,17 +1,14 @@
-# 使用較新的 Node.js 18 Bookworm 版本 (通常下載源更穩定)
-FROM node:18-bookworm
+# 使用 Alpine Linux，體積最小、下載最快
+FROM node:18-alpine
 
-# 安裝系統套件：Python3 (給 yt-dlp 用)、FFmpeg (音訊轉碼)
-# 加入 --fix-missing 並優化下載
-RUN apt-get update --fix-missing && \
-    apt-get install -y --no-install-recommends python3 python3-pip ffmpeg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# 安裝 Python3, FFmpeg, Git, Make, g++
+# 這些是音樂機器人與編譯過程必須的
+RUN apk add --no-cache python3 py3-pip ffmpeg git make g++
 
 # 設定工作目錄
 WORKDIR /app
 
-# 只複製 package.json
+# 複製 package.json
 COPY package.json ./
 
 # 安裝專案依賴
