@@ -41,22 +41,42 @@ export class MusicManager {
         const cookiePath = path.join(process.cwd(), 'cookies.txt');
         if (fs.existsSync(cookiePath)) {
             try {
-                // play-dl 支援讀取 cookie 內容
-                // 如果是 Netscape 格式 (cookies.txt)，play-dl 其實沒有直接的 API 讀取檔案
-                // 但我們可以讀取內容後傳遞。
-                // 這裡我們嘗試最簡單的：如果有 cookies.txt，我們就不做特別設定，
-                // 因為 play-dl 主要依賴自己的機制，或者我們需要將 cookies 轉為 JSON。
-                // 
-                // 為了簡單起見，我們先不手動 setToken，因為 cookies.txt 格式轉換比較麻煩。
-                // 如果失敗，我們再考慮進階的 cookie 設定。
-                console.log('偵測到 cookies.txt，但 play-dl 需要 JSON 格式或特定的 setToken。');
-                console.log('目前先嘗試無 Cookie 或預設機制。');
+                // 讀取 Netscape 格式的 cookies.txt
+                const content = fs.readFileSync(cookiePath, 'utf8');
+                const lines = content.split('\n');
                 
-                // 注意：若要讓 play-dl 用 cookie，通常需要將其轉為 JSON 格式
-                // 這裡我們先試試看 play-dl 的預設抗擋能力。
+                const cookies: string[] = [];
+                
+                for (const line of lines) {
+                    // 跳過註解和空行
+                    if (line.startsWith('#') || !line.trim()) continue;
+                    
+                    const parts = line.split('\t');
+                    // Netscape 格式通常有 7 個欄位，第 6 是 name，第 7 是 value
+                    if (parts.length >= 7) {
+                        const name = parts[5];
+                        const value = parts[6].trim(); // 去除可能的換行符
+                        cookies.push(`${name}=${value}`);
+                    }
+                }
+                
+                if (cookies.length > 0) {
+                    const cookieString = cookies.join('; ');
+                    play.setToken({
+                        youtube: {
+                            cookie: cookieString
+                        }
+                    });
+                    console.log(`✅ play-dl Cookies 設定成功 (載入 ${cookies.length} 個 Cookie)`);
+                } else {
+                    console.warn('⚠️ cookies.txt 讀取成功但未解析出有效 Cookie');
+                }
+
             } catch (error) {
                 console.error('Cookies 設定失敗', error);
             }
+        } else {
+            console.log('⚠️ 未找到 cookies.txt，將以訪客模式執行');
         }
     }
 
