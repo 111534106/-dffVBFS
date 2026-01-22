@@ -1,0 +1,5 @@
+node_modules
+npm-debug.log
+bot.log
+bot.err
+.env
