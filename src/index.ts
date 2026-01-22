@@ -1,8 +1,20 @@
 import { Client, GatewayIntentBits, Interaction } from 'discord.js';
 import { MusicManager } from './bot/MusicManager';
 import dotenv from 'dotenv';
+import http from 'http';
 
 dotenv.config();
+
+// --- 新增：建立一個簡單的 HTTP 伺服器來騙過 Render ---
+const port = process.env.PORT || 3000;
+const server = http.createServer((req, res) => {
+    res.writeHead(200);
+    res.end('Music Bot is Alive!');
+});
+server.listen(port, () => {
+    console.log(`Web Server listening on port ${port}`);
+});
+// ----------------------------------------------------
 
 const client = new Client({
     intents: [
@@ -72,7 +84,8 @@ client.on('interactionCreate', async (interaction: Interaction) => {
             const list = queue.map((song, index) => 
                 `${index + 1}. **${song.title}** (${song.duration})`
             ).join('\n');
-            await interaction.reply(`📜 **播放清單**:\n${list}`.slice(0, 2000));
+            await interaction.reply(`📜 **播放清單**:
+${list}`.slice(0, 2000));
         }
     }
 
