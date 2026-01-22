@@ -49,9 +49,8 @@ export class MusicManager {
         const ytdlOptions: any = {
             noWarnings: true,
             noCheckCertificates: true,
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            referer: 'https://www.youtube.com/',
-            extractorArgs: 'youtube:player_client=android' // 關鍵修正：改用 Android 客戶端
+            // 移除 User-Agent 和 Referer，避免與 App 客戶端衝突
+            extractorArgs: 'youtube:player_client=ios' // 改回 iOS 客戶端
         };
 
         if (hasCookies) {
@@ -119,9 +118,8 @@ export class MusicManager {
             noPlaylist: true,
             noCheckCertificates: true,
             noWarnings: true,
-            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            referer: 'https://www.youtube.com/',
-            extractorArgs: 'youtube:player_client=android' // 關鍵修正：改用 Android 客戶端
+            // 移除 User-Agent 和 Referer
+            extractorArgs: 'youtube:player_client=ios' // 改回 iOS 客戶端
         };
 
         if (hasCookies) {
