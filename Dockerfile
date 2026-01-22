@@ -1,4 +1,4 @@
-# 使用 Node.js 20 (解決 undici/File is not defined 的問題)
+# 使用 Node.js 20
 FROM node:20-alpine
 
 # 安裝 Python3, FFmpeg, Git, Make, g++
@@ -22,5 +22,5 @@ RUN npm install
 # 複製所有程式碼
 COPY . .
 
-# 啟動指令
-CMD npm run deploy && npm run dev
+# 啟動指令：只執行啟動，不執行 deploy 以加快速度
+CMD npm run dev
