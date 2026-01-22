@@ -11,6 +11,8 @@ import {
 } from '@discordjs/voice';
 import ytSearch from 'yt-search';
 import youtubedl from 'youtube-dl-exec';
+import fs from 'fs';
+import path from 'path';
 
 export class MusicManager {
     public readonly guildId: string;
@@ -39,15 +41,23 @@ export class MusicManager {
         let title: string;
         let duration: string;
 
+        // 檢查 cookies.txt 是否存在
+        const cookiePath = path.join(process.cwd(), 'cookies.txt');
+        const hasCookies = fs.existsSync(cookiePath);
+
         // 共用的 yt-dlp 選項
-        const ytdlOptions = {
+        const ytdlOptions: any = {
             noWarnings: true,
             preferFreeFormats: true,
             noCheckCertificates: true,
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             referer: 'https://www.youtube.com/',
-            cookies: 'cookies.txt' // 使用 Cookies
         };
+
+        if (hasCookies) {
+            ytdlOptions.cookies = 'cookies.txt';
+            console.log('使用 Cookies 進行解析');
+        }
 
         if (query.startsWith('http')) {
             songUrl = query;
@@ -98,19 +108,30 @@ export class MusicManager {
         const song = this.queue[0];
         console.log(`準備播放: ${song.title}`);
         
+        // 檢查 cookies.txt 是否存在
+        const cookiePath = path.join(process.cwd(), 'cookies.txt');
+        const hasCookies = fs.existsSync(cookiePath);
+        
+        const execOptions: any = {
+            output: '-',
+            format: 'bestaudio',
+            limitRate: '1M',
+            noPlaylist: true,
+            noCheckCertificates: true,
+            noWarnings: true,
+            preferFreeFormats: true,
+            userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            referer: 'https://www.youtube.com/',
+            extractorArgs: 'youtube:player_client=ios'
+        };
+
+        if (hasCookies) {
+            execOptions.cookies = 'cookies.txt';
+            console.log('使用 Cookies 進行播放');
+        }
+
         try {
-            const process = youtubedl.exec(song.url, {
-                output: '-',
-                format: 'bestaudio',
-                limitRate: '1M',
-                noPlaylist: true,
-                noCheckCertificates: true,
-                noWarnings: true,
-                preferFreeFormats: true,
-                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                referer: 'https://www.youtube.com/',
-                cookies: 'cookies.txt'
-            } as any, { stdio: ['ignore', 'pipe', 'ignore'] });
+            const process = youtubedl.exec(song.url, execOptions, { stdio: ['ignore', 'pipe', 'ignore'] });
 
             if (!process.stdout) throw new Error('無法啟動 yt-dlp 串流');
 
