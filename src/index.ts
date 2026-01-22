@@ -10,17 +10,30 @@ dotenv.config();
 // --- 新增：處理 Cookies ---
 // 檢查環境變數是否有 YOUTUBE_COOKIES，若有則寫入檔案
 const cookiesContent = process.env.YOUTUBE_COOKIES;
+console.log('--------------------------------------------------');
+console.log(`[Debug] Current Working Directory: ${process.cwd()}`);
+console.log(`[Debug] Checking YOUTUBE_COOKIES env var: ${cookiesContent ? 'EXISTS (Length: ' + cookiesContent.length + ')' : 'UNDEFINED'}`);
+
 if (cookiesContent) {
     try {
         const cookiePath = path.join(process.cwd(), 'cookies.txt');
+        console.log(`[Debug] Target cookie path: ${cookiePath}`);
+        
         fs.writeFileSync(cookiePath, cookiesContent, 'utf8');
-        console.log('✅ 成功載入 YouTube Cookies 到 cookies.txt');
+        
+        if (fs.existsSync(cookiePath)) {
+            const stats = fs.statSync(cookiePath);
+            console.log(`✅ [Debug] cookies.txt created successfully! Size: ${stats.size} bytes`);
+        } else {
+            console.error('❌ [Debug] cookies.txt written but file not found!');
+        }
     } catch (err) {
-        console.error('❌ 寫入 cookies.txt 失敗:', err);
+        console.error('❌ [Debug] Failed to write cookies.txt:', err);
     }
 } else {
-    console.log('⚠️ 未偵測到 YOUTUBE_COOKIES 環境變數，將嘗試無 Cookies 模式 (可能容易被擋)');
+    console.log('⚠️ [Debug] 未偵測到 YOUTUBE_COOKIES 環境變數。請在 Render Dashboard -> Environment 新增此變數。');
 }
+console.log('--------------------------------------------------');
 // ------------------------
 
 // --- 新增：建立一個簡單的 HTTP 伺服器來騙過 Render ---
