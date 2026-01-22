@@ -2,8 +2,26 @@ import { Client, GatewayIntentBits, Interaction } from 'discord.js';
 import { MusicManager } from './bot/MusicManager';
 import dotenv from 'dotenv';
 import http from 'http';
+import fs from 'fs';
+import path from 'path';
 
 dotenv.config();
+
+// --- 新增：處理 Cookies ---
+// 檢查環境變數是否有 YOUTUBE_COOKIES，若有則寫入檔案
+const cookiesContent = process.env.YOUTUBE_COOKIES;
+if (cookiesContent) {
+    try {
+        const cookiePath = path.join(process.cwd(), 'cookies.txt');
+        fs.writeFileSync(cookiePath, cookiesContent, 'utf8');
+        console.log('✅ 成功載入 YouTube Cookies 到 cookies.txt');
+    } catch (err) {
+        console.error('❌ 寫入 cookies.txt 失敗:', err);
+    }
+} else {
+    console.log('⚠️ 未偵測到 YOUTUBE_COOKIES 環境變數，將嘗試無 Cookies 模式 (可能容易被擋)');
+}
+// ------------------------
 
 // --- 新增：建立一個簡單的 HTTP 伺服器來騙過 Render ---
 const port = process.env.PORT || 3000;
