@@ -5,8 +5,8 @@ FROM node:20-alpine
 # yt-dlp 需要 Python3
 RUN apk add --no-cache python3 py3-pip ffmpeg git make g++
 
-# 透過 pip 安裝 yt-dlp (避開 GitHub API Rate Limit)
-RUN pip3 install --break-system-packages yt-dlp
+# 透過 pip 安裝 yt-dlp (使用 GitHub Master 版本以取得最新修復)
+RUN pip3 install --break-system-packages https://github.com/yt-dlp/yt-dlp/archive/master.zip
 
 # 設定工作目錄
 WORKDIR /app
